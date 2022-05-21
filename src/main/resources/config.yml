@@ -1,0 +1,37 @@
+tab:
+  default:
+    priority: 0
+    commands: []
+  vip:
+    priority: 1
+    commands:
+      - "/home"
+blocked_command_default_actions:
+  - "message: &8[&b&lECB&8] &cYou don't have permissions to use that command."
+  - "playsound: BLOCK_NOTE_BLOCK_PLING;10;0.1"
+  - "title: 20;40;20;&cWhat are you doing?;&7Don't use that command!"
+use_commands_as_whitelist: false
+commands:
+  - "/?"
+  - "/bukkit:?"
+  - "/bukkit:ver"
+  - "/bukkit:version"
+  - "/bukkit:pl"
+  - "/bukkit:plugins"
+  - "/bukkit:help"
+  - "/bukkit:about"
+  - "/ver"
+  - "/version"
+  - "/plugins"
+  - "/pl"
+  - "/minecraft:me"
+  - "/about"
+  - "/icanhasbukkit"
+custom_commands_actions:
+  example1:
+    commands:
+      - "/ver"
+      - "/version"
+      - "/about"
+    actions:
+      - "console_command: kick %player% You can't see the version of the server!"
