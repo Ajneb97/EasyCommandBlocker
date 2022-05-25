@@ -2,6 +2,7 @@ package ecb.ajneb97.spigot;
 
 import ecb.ajneb97.spigot.listeners.PlayerListener;
 import ecb.ajneb97.spigot.listeners.PlayerListenerNew;
+import ecb.ajneb97.spigot.managers.BungeeMessagingManager;
 import ecb.ajneb97.spigot.managers.CommandsManager;
 import ecb.ajneb97.spigot.managers.ProtocolLibManager;
 import ecb.ajneb97.spigot.managers.ViaVersionManager;
@@ -36,11 +37,13 @@ public class EasyCommandBlocker extends JavaPlugin {
     private CommandsManager commandsManager;
     private ProtocolLibManager protocolLibManager;
     private ViaVersionManager viaVersionManager;
+    private BungeeMessagingManager bungeeMessagingManager;
 
     public void onEnable(){
         registerConfig();
         registerCommands();
         registerEvents();
+        bungeeMessagingManager = new BungeeMessagingManager(this);
         commandsManager = new CommandsManager(this);
         protocolLibManager = new ProtocolLibManager(this);
         viaVersionManager = new ViaVersionManager(this);
@@ -91,6 +94,10 @@ public class EasyCommandBlocker extends JavaPlugin {
 
     public ViaVersionManager getViaVersionManager() {
         return viaVersionManager;
+    }
+
+    public BungeeMessagingManager getBungeeMessagingManager() {
+        return bungeeMessagingManager;
     }
 
     public void updateChecker(){

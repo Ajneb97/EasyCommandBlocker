@@ -1,6 +1,7 @@
 package ecb.ajneb97.waterfall.utils;
 
 
+import ecb.ajneb97.core.model.GlobalVariables;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 
 import java.util.List;
@@ -13,9 +14,8 @@ public class ActionsUtils {
 			if(action.startsWith("message: ")) {
 				String message = action.replace("message: ","");
 				player.sendMessage(MessagesUtils.getColoredMessage(message));
-			}else if(action.startsWith("console_command: ")) {
-				String line = action.replace("console_command: ", "").replace("%player%", player.getName());
-
+			}else{
+				PluginMessagingUtils.sendMessage(player, GlobalVariables.bungeeActionsSubChannel,action);
 			}
 		}
 	}

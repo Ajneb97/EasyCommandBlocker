@@ -1,5 +1,6 @@
 package ecb.ajneb97.waterfall;
 
+import ecb.ajneb97.core.model.GlobalVariables;
 import ecb.ajneb97.waterfall.listeners.PlayerListener;
 import ecb.ajneb97.waterfall.managers.CommandsManager;
 import ecb.ajneb97.waterfall.utils.MessagesUtils;
@@ -42,6 +43,7 @@ public class EasyCommandBlocker extends Plugin {
             return;
         }
 
+        getProxy().registerChannel(GlobalVariables.bungeeMainChannel);
         registerConfig();
         registerCommands();
         registerEvents();
