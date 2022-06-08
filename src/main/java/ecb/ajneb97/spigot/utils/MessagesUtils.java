@@ -9,7 +9,7 @@ import java.util.regex.Pattern;
 public class MessagesUtils {
 
     public static String getColoredMessage(String text) {
-        if(Bukkit.getVersion().contains("1.16") || Bukkit.getVersion().contains("1.17") || Bukkit.getVersion().contains("1.18")) {
+        if(OtherUtils.serverIsNew()) {
             Pattern pattern = Pattern.compile("#[a-fA-F0-9]{6}");
             Matcher match = pattern.matcher(text);
 
