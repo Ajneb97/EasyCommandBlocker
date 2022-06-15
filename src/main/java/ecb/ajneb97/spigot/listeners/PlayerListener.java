@@ -3,7 +3,7 @@ package ecb.ajneb97.spigot.listeners;
 import ecb.ajneb97.core.model.internal.UseCommandResult;
 import ecb.ajneb97.spigot.EasyCommandBlocker;
 import ecb.ajneb97.spigot.api.CommandBlockedEvent;
-import ecb.ajneb97.spigot.managers.CommandsManager;
+import ecb.ajneb97.spigot.managers.CommandsManagerSpigot;
 import ecb.ajneb97.spigot.utils.ActionsUtils;
 import ecb.ajneb97.spigot.utils.MessagesUtils;
 import org.bukkit.entity.Player;
@@ -30,7 +30,7 @@ public class PlayerListener implements Listener {
             return;
         }
 
-        CommandsManager commandsManager = plugin.getCommandsManager();
+        CommandsManagerSpigot commandsManager = plugin.getCommandsManager();
         UseCommandResult result = commandsManager.useCommand(command);
         if(!result.isCanUseCommand()){
             CommandBlockedEvent commandBlockedEvent = new CommandBlockedEvent(player,result.getFoundCommand(),command);

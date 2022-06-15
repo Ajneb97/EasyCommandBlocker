@@ -18,13 +18,13 @@ public class MainCommand extends Command {
         if(sender.hasPermission("easycommandblocker.admin")){
             if(args.length >= 1){
                 if(args[0].equalsIgnoreCase("reload")){
-                    reload(sender,args);
+                    reload(sender);
                 }
             }
         }
     }
 
-	public void reload(CommandSender sender, String[] args){
+	public void reload(CommandSender sender){
 		plugin.customReload();
 		sender.sendMessage(MessagesUtils.getColoredMessage(plugin.prefix+" &aConfig reloaded!"));
 	}

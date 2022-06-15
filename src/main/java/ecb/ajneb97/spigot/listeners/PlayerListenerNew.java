@@ -1,7 +1,8 @@
 package ecb.ajneb97.spigot.listeners;
 
 import ecb.ajneb97.spigot.EasyCommandBlocker;
-import ecb.ajneb97.spigot.managers.CommandsManager;
+import ecb.ajneb97.spigot.managers.CommandsManagerSpigot;
+import ecb.ajneb97.spigot.utils.OtherUtils;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -23,8 +24,8 @@ public class PlayerListenerNew implements Listener {
         if(player.isOp() || player.hasPermission("easycommandblocker.bypass.tab")){
             return;
         }
-        CommandsManager commandsManager = plugin.getCommandsManager();
-        List<String> commands = commandsManager.getTabCommands(player);
+        CommandsManagerSpigot commandsManager = plugin.getCommandsManager();
+        List<String> commands = commandsManager.getTabCommands(OtherUtils.getPlayerPermissionsList(player));
 
         event.getCommands().clear();
 

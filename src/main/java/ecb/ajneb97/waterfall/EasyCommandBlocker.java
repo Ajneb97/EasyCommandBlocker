@@ -2,7 +2,7 @@ package ecb.ajneb97.waterfall;
 
 import ecb.ajneb97.core.model.GlobalVariables;
 import ecb.ajneb97.waterfall.listeners.PlayerListener;
-import ecb.ajneb97.waterfall.managers.CommandsManager;
+import ecb.ajneb97.waterfall.managers.CommandsManagerWaterfall;
 import ecb.ajneb97.waterfall.utils.MessagesUtils;
 import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.plugin.Plugin;
@@ -35,11 +35,11 @@ public class EasyCommandBlocker extends Plugin {
     public String latestversion;
     private String configRoute;
 
-    private CommandsManager commandsManager;
+    private CommandsManagerWaterfall commandsManager;
 
     public void onEnable(){
         if(!ProxyServer.getInstance().getVersion().contains("Waterfall")){
-            ProxyServer.getInstance().getConsole().sendMessage(MessagesUtils.getColoredMessage(prefix+" &cThe plugin requires Waterfall to work!"));
+            ProxyServer.getInstance().getConsole().sendMessage(MessagesUtils.getColoredMessage(prefix+" &cThe plugin requires Waterfall or Velocity to work!"));
             return;
         }
 
@@ -47,7 +47,7 @@ public class EasyCommandBlocker extends Plugin {
         registerConfig();
         registerCommands();
         registerEvents();
-        commandsManager = new CommandsManager(this);
+        commandsManager = new CommandsManagerWaterfall(this);
         checkMessagesUpdate();
 
         ProxyServer.getInstance().getConsole().sendMessage(MessagesUtils.getColoredMessage(prefix+" &eHas been enabled! &fVersion: "+version));
@@ -96,7 +96,7 @@ public class EasyCommandBlocker extends Plugin {
         pm.registerListener(this, new PlayerListener(this));
     }
 
-    public CommandsManager getCommandsManager() {
+    public CommandsManagerWaterfall getCommandsManager() {
         return commandsManager;
     }
 

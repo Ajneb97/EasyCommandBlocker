@@ -22,7 +22,7 @@ public class MainCommand implements CommandExecutor {
 
 		if(args.length >= 1){
 			if(args[0].equalsIgnoreCase("reload")){
-				reload(sender,args);
+				reload(sender);
 			}
 		}
 
@@ -30,7 +30,7 @@ public class MainCommand implements CommandExecutor {
 
 	}
 
-	public void reload(CommandSender sender, String[] args){
+	public void reload(CommandSender sender){
 		plugin.customReload();
 		sender.sendMessage(MessagesUtils.getColoredMessage(plugin.prefix+" &aConfig reloaded!"));
 	}

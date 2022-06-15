@@ -1,56 +1,21 @@
-package ecb.ajneb97.spigot.managers;
+package ecb.ajneb97.core.managers;
 
 import ecb.ajneb97.core.model.ConfigStructure;
 import ecb.ajneb97.core.model.CustomCommandGroup;
 import ecb.ajneb97.core.model.TabCommandList;
 import ecb.ajneb97.core.model.internal.UseCommandResult;
-import ecb.ajneb97.spigot.EasyCommandBlocker;
-import org.bukkit.configuration.file.FileConfiguration;
-import org.bukkit.entity.Player;
-
-import java.util.ArrayList;
 import java.util.List;
 
-public class CommandsManager {
-    private EasyCommandBlocker plugin;
-    private ConfigStructure configStructure;
-    public CommandsManager(EasyCommandBlocker plugin){
-        this.plugin = plugin;
-        load();
-    }
+public abstract class CommandsManager {
+    protected ConfigStructure configStructure;
 
-    public void load(){
-        FileConfiguration config = plugin.getConfig();
-        List<String> commands = config.getStringList("commands");
-        List<String> blockedCommandDefaultActions = config.getStringList("blocked_command_default_actions");
-        List<TabCommandList> tabCommands = new ArrayList<TabCommandList>();
-        for(String key : config.getConfigurationSection("tab").getKeys(false)){
-            List<String> tab = config.getStringList("tab."+key+".commands");
-            int priority = config.getInt("tab."+key+".priority");
-            TabCommandList tabCommandList = new TabCommandList(key,priority,tab);
-            tabCommands.add(tabCommandList);
-        }
-        boolean useCommandsAsWhitelist = config.getBoolean("use_commands_as_whitelist");
-        List<CustomCommandGroup> customCommandGroupList = new ArrayList<CustomCommandGroup>();
-
-        if(config.contains("custom_commands_actions")){
-            for(String key : config.getConfigurationSection("custom_commands_actions").getKeys(false)){
-                String path = "custom_commands_actions."+key;
-                List<String> commandsList = config.getStringList(path+".commands");
-                List<String> actionsList = config.getStringList(path+".actions");
-                CustomCommandGroup customCommandGroup = new CustomCommandGroup(commandsList,actionsList);
-                customCommandGroupList.add(customCommandGroup);
-            }
-        }
-        configStructure = new ConfigStructure(commands,blockedCommandDefaultActions,tabCommands,useCommandsAsWhitelist
-        ,customCommandGroupList);
-    }
+    public abstract void load();
 
     public List<String> getBlockCommandDefaultActions(){
         return configStructure.getBlockedCommandActions();
     }
 
-    public List<String> getTabCommands(Player player){
+    public List<String> getTabCommands(List<String> permissions){
         List<TabCommandList> tabCommandLists = configStructure.getTabCommandList();
         List<String> currentTabCommands = null;
         List<String> defaultTabCommands = null;
@@ -62,7 +27,7 @@ public class CommandsManager {
             }
 
             String perm = t.getPermission();
-            if(player.hasPermission(perm)){
+            if(permissions.contains(perm)){
                 if(t.getPriority() > currentPriority){
                     currentTabCommands = t.getCommands();
                     currentPriority = t.getPriority();
@@ -116,5 +81,9 @@ public class CommandsManager {
             }
         }
         return null;
+    }
+
+    public ConfigStructure getConfigStructure() {
+        return configStructure;
     }
 }

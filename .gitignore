@@ -36,6 +36,7 @@ tmp/
 local.properties
 .settings/
 .loadpath
+dependency-reduced-pom.xml
 .recommenders
 .idea/
 target/
