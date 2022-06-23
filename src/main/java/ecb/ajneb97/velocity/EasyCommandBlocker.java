@@ -7,20 +7,20 @@ import com.velocitypowered.api.event.proxy.ProxyInitializeEvent;
 import com.velocitypowered.api.plugin.Plugin;
 import com.velocitypowered.api.plugin.annotation.DataDirectory;
 import com.velocitypowered.api.proxy.ProxyServer;
+import ecb.ajneb97.core.managers.CommandsManager;
+import ecb.ajneb97.core.managers.ConfigManager;
 import ecb.ajneb97.velocity.listeners.PlayerListener;
-import ecb.ajneb97.velocity.managers.CommandsManagerVelocity;
-import ecb.ajneb97.velocity.managers.ConfigManager;
 import java.nio.file.Path;
 import java.util.logging.Logger;
 
 @Plugin(id = "easycommandblocker", name = "EasyCommandBlocker",
-        version = "1.6.1", authors = {"Ajneb97"})
+        version = "1.7.1", authors = {"Ajneb97"})
 public class EasyCommandBlocker {
 
     private final ProxyServer server;
     private final Logger logger;
     private final Path dataDirectory;
-    private CommandsManagerVelocity commandsManager;
+    private CommandsManager commandsManager;
     private ConfigManager configManager;
     public String prefix = "&8[&bEasy&9CommandBlocker&8]";
 
@@ -33,9 +33,10 @@ public class EasyCommandBlocker {
 
     @Subscribe
     public void onProxyInitialization(ProxyInitializeEvent event) {
-        this.configManager = new ConfigManager();
-        this.configManager.registerConfig(dataDirectory);
-        this.commandsManager = new CommandsManagerVelocity(this);
+        this.configManager = new ConfigManager(dataDirectory,"velocity-config.yml","config.yml");
+        this.configManager.registerConfig();
+        this.configManager.checkMessagesUpdate();
+        commandsManager = new CommandsManager(configManager.getConfig());
 
         server.getEventManager().register(this, new PlayerListener(this));
         CommandMeta meta = server.getCommandManager().metaBuilder("easycommandblocker")
@@ -47,16 +48,12 @@ public class EasyCommandBlocker {
         return this.server;
     }
 
-    public CommandsManagerVelocity getCommandsManager() {
+    public CommandsManager getCommandsManager() {
         return commandsManager;
     }
 
-    public ConfigManager getConfigManager() {
-        return configManager;
-    }
-
     public void customReload(){
-        configManager.registerConfig(dataDirectory);
-        this.commandsManager.load();
+        configManager.registerConfig();
+        this.commandsManager.load(configManager.getConfig());
     }
 }

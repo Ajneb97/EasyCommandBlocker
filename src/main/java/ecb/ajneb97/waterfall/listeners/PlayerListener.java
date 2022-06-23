@@ -1,9 +1,9 @@
 package ecb.ajneb97.waterfall.listeners;
 
+import ecb.ajneb97.core.managers.CommandsManager;
 import ecb.ajneb97.core.model.internal.UseCommandResult;
 import ecb.ajneb97.waterfall.EasyCommandBlocker;
 import ecb.ajneb97.waterfall.api.CommandBlockedEvent;
-import ecb.ajneb97.waterfall.managers.CommandsManagerWaterfall;
 import ecb.ajneb97.waterfall.utils.ActionsUtils;
 import io.github.waterfallmc.waterfall.event.ProxyDefineCommandsEvent;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
@@ -38,7 +38,7 @@ public class PlayerListener implements Listener {
                 return;
             }
 
-            CommandsManagerWaterfall commandsManager = plugin.getCommandsManager();
+            CommandsManager commandsManager = plugin.getCommandsManager();
             UseCommandResult result = commandsManager.useCommand(command);
             if(!result.isCanUseCommand()){
                 CommandBlockedEvent commandBlockedEvent = new CommandBlockedEvent(player,result.getFoundCommand(),command);
@@ -65,7 +65,7 @@ public class PlayerListener implements Listener {
                 return;
             }
 
-            CommandsManagerWaterfall commandsManager = plugin.getCommandsManager();
+            CommandsManager commandsManager = plugin.getCommandsManager();
             List<String> permissions = new ArrayList<String>(player.getPermissions());
             List<String> commands = commandsManager.getTabCommands(permissions);
 

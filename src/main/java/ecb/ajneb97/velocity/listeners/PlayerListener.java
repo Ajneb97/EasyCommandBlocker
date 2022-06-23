@@ -5,10 +5,10 @@ import com.velocitypowered.api.event.Subscribe;
 import com.velocitypowered.api.event.command.CommandExecuteEvent;
 import com.velocitypowered.api.event.command.PlayerAvailableCommandsEvent;
 import com.velocitypowered.api.proxy.Player;
+import ecb.ajneb97.core.managers.CommandsManager;
 import ecb.ajneb97.core.model.internal.UseCommandResult;
 import ecb.ajneb97.velocity.EasyCommandBlocker;
 import ecb.ajneb97.velocity.api.CommandBlockedEvent;
-import ecb.ajneb97.velocity.managers.CommandsManagerVelocity;
 import ecb.ajneb97.velocity.utils.ActionsUtils;
 import ecb.ajneb97.velocity.utils.OtherUtils;
 import java.util.Collection;
@@ -31,7 +31,7 @@ public class PlayerListener {
                 return;
             }
 
-            CommandsManagerVelocity commandsManager = plugin.getCommandsManager();
+            CommandsManager commandsManager = plugin.getCommandsManager();
             UseCommandResult result = commandsManager.useCommand(command);
             if(!result.isCanUseCommand()){
                 CommandBlockedEvent commandBlockedEvent = new CommandBlockedEvent(player,result.getFoundCommand(),command);
@@ -58,7 +58,7 @@ public class PlayerListener {
             return;
         }
 
-        CommandsManagerVelocity commandsManager = plugin.getCommandsManager();
+        CommandsManager commandsManager = plugin.getCommandsManager();
 
         List<String> permissions = OtherUtils.getPermissions(player,commandsManager);
         List<String> commands = commandsManager.getTabCommands(permissions);

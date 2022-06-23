@@ -1,9 +1,9 @@
 package ecb.ajneb97.spigot.listeners;
 
+import ecb.ajneb97.core.managers.CommandsManager;
 import ecb.ajneb97.core.model.internal.UseCommandResult;
 import ecb.ajneb97.spigot.EasyCommandBlocker;
 import ecb.ajneb97.spigot.api.CommandBlockedEvent;
-import ecb.ajneb97.spigot.managers.CommandsManagerSpigot;
 import ecb.ajneb97.spigot.utils.ActionsUtils;
 import ecb.ajneb97.spigot.utils.MessagesUtils;
 import org.bukkit.entity.Player;
@@ -30,7 +30,7 @@ public class PlayerListener implements Listener {
             return;
         }
 
-        CommandsManagerSpigot commandsManager = plugin.getCommandsManager();
+        CommandsManager commandsManager = plugin.getCommandsManager();
         UseCommandResult result = commandsManager.useCommand(command);
         if(!result.isCanUseCommand()){
             CommandBlockedEvent commandBlockedEvent = new CommandBlockedEvent(player,result.getFoundCommand(),command);
@@ -50,8 +50,9 @@ public class PlayerListener implements Listener {
     @EventHandler
     public void updateNotification(PlayerJoinEvent event){
         Player player = event.getPlayer();
-        if(player.isOp() && !(plugin.version.equals(plugin.latestversion))){
-            player.sendMessage(MessagesUtils.getColoredMessage(plugin.prefix+" &cThere is a new version available. &e(&7"+plugin.latestversion+"&e)"));
+        String latestVersion = plugin.getUpdateCheckerManager().getLatestVersion();
+        if(player.isOp() && !(plugin.version.equals(latestVersion))){
+            player.sendMessage(MessagesUtils.getColoredMessage(plugin.prefix+" &cThere is a new version available. &e(&7"+latestVersion+"&e)"));
             player.sendMessage(MessagesUtils.getColoredMessage("&cYou can download it at: &ahttps://www.spigotmc.org/resources/101752/"));
         }
     }

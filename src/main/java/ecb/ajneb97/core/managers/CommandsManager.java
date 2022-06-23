@@ -4,12 +4,45 @@ import ecb.ajneb97.core.model.ConfigStructure;
 import ecb.ajneb97.core.model.CustomCommandGroup;
 import ecb.ajneb97.core.model.TabCommandList;
 import ecb.ajneb97.core.model.internal.UseCommandResult;
+import org.simpleyaml.configuration.file.YamlFile;
+
+import java.util.ArrayList;
 import java.util.List;
 
-public abstract class CommandsManager {
-    protected ConfigStructure configStructure;
+public  class CommandsManager {
+    private ConfigStructure configStructure;
 
-    public abstract void load();
+    public CommandsManager(YamlFile config){
+        load(config);
+    }
+
+    public void load(YamlFile config){
+        List<String> commands = config.getStringList("commands");
+        List<String> blockedCommandDefaultActions = config.getStringList("blocked_command_default_actions");
+        List<TabCommandList> tabCommands = new ArrayList<TabCommandList>();
+        for(String key : config.getConfigurationSection("tab").getKeys(false)){
+            List<String> tab = config.getStringList("tab."+key+".commands");
+            int priority = config.getInt("tab."+key+".priority");
+            String extendTabName = config.getString("tab."+key+".extends");
+            TabCommandList tabCommandList = new TabCommandList(key,priority,tab,extendTabName);
+            tabCommands.add(tabCommandList);
+        }
+        boolean useCommandsAsWhitelist = config.getBoolean("use_commands_as_whitelist");
+
+        List<CustomCommandGroup> customCommandGroupList = new ArrayList<CustomCommandGroup>();
+
+        if(config.contains("custom_commands_actions")){
+            for(String key : config.getConfigurationSection("custom_commands_actions").getKeys(false)){
+                String path = "custom_commands_actions."+key;
+                List<String> commandsList = config.getStringList(path+".commands");
+                List<String> actionsList = config.getStringList(path+".actions");
+                CustomCommandGroup customCommandGroup = new CustomCommandGroup(commandsList,actionsList);
+                customCommandGroupList.add(customCommandGroup);
+            }
+        }
+        configStructure = new ConfigStructure(commands,blockedCommandDefaultActions,tabCommands,useCommandsAsWhitelist
+                ,customCommandGroupList);
+    }
 
     public List<String> getBlockCommandDefaultActions(){
         return configStructure.getBlockedCommandActions();
@@ -31,6 +64,11 @@ public abstract class CommandsManager {
                 if(t.getPriority() > currentPriority){
                     currentTabCommands = t.getCommands();
                     currentPriority = t.getPriority();
+
+                    if(t.getExtendTabName() != null){
+                        currentTabCommands.addAll(getExtendsTabCommands(t.getExtendTabName(),
+                                new ArrayList<String>(),0));
+                    }
                 }
             }
         }
@@ -40,6 +78,33 @@ public abstract class CommandsManager {
         }else{
             return defaultTabCommands;
         }
+    }
+
+    public List<String> getExtendsTabCommands(String name,List<String> extendsTabCommandList,int currentIteration){
+        if(currentIteration >= 10){
+            //In case of stackoverflow
+            return new ArrayList<String>();
+        }
+        List<TabCommandList> tabCommandLists = configStructure.getTabCommandList();
+        TabCommandList tabCommandList = getTabCommandListByName(name,tabCommandLists);
+
+        extendsTabCommandList.addAll(tabCommandList.getCommands());
+
+        if(tabCommandList.getExtendTabName() != null){
+            currentIteration++;
+            return getExtendsTabCommands(tabCommandList.getExtendTabName(),extendsTabCommandList,currentIteration);
+        }else{
+            return extendsTabCommandList;
+        }
+    }
+
+    public TabCommandList getTabCommandListByName(String name,List<TabCommandList> tabCommandLists){
+        for(TabCommandList t : tabCommandLists){
+            if(t.getName().equals(name)){
+                return t;
+            }
+        }
+        return null;
     }
 
     public UseCommandResult useCommand(String command){

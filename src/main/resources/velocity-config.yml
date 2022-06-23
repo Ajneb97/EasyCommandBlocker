@@ -1,0 +1,17 @@
+tab:
+  default:
+    priority: 0
+    commands: []
+blocked_command_default_actions:
+  - "message: &8[&b&lECB&8] &cYou don't have permissions to use that command."
+use_commands_as_whitelist: false
+commands:
+  - "/velocity"
+  - "/server"
+  - "/lpv"
+custom_commands_actions:
+  example1:
+    commands:
+      - "/velocity"
+    actions:
+      - "message: &8[&b&lECB&8] &cYou can't see the Velocity version!"

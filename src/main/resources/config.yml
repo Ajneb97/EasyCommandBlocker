@@ -4,6 +4,7 @@ tab:
     commands: []
   vip:
     priority: 1
+    extends: default
     commands:
       - "/home"
 blocked_command_default_actions:

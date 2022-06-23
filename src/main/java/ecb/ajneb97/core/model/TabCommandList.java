@@ -6,11 +6,13 @@ public class TabCommandList {
     private String name;
     private int priority;
     private List<String> commands;
+    private String extendTabName;
 
-    public TabCommandList(String name, int priority, List<String> commands) {
+    public TabCommandList(String name, int priority, List<String> commands, String extendTabName) {
         this.name = name;
         this.commands = commands;
         this.priority = priority;
+        this.extendTabName = extendTabName;
     }
 
     public String getName() {
@@ -35,6 +37,14 @@ public class TabCommandList {
 
     public void setPriority(int priority) {
         this.priority = priority;
+    }
+
+    public String getExtendTabName() {
+        return extendTabName;
+    }
+
+    public void setExtendTabName(String extendTabName) {
+        this.extendTabName = extendTabName;
     }
 
     public String getPermission(){
