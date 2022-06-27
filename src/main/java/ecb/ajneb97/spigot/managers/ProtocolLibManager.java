@@ -40,7 +40,11 @@ public class ProtocolLibManager {
                 if(player.isOp() || player.hasPermission("easycommandblocker.bypass.tab")){
                     return;
                 }
-                String message = (packet.getSpecificModifier(String.class).read(0)).split(" ")[0];
+                String[] messages = (packet.getSpecificModifier(String.class).read(0)).split(" ");
+                if(messages.length == 0){
+                    return;
+                }
+                String message = messages[0];
 
                 if(OtherUtils.serverIsLegacy() || pluginE.getViaVersionManager().playerIsLegacy(player)){
                     if(!message.startsWith("/")){

@@ -66,8 +66,11 @@ public class EasyCommandBlocker extends Plugin {
 
     public void updateMessage(UpdateCheckerResult result){
         if(!result.isError()){
-            ProxyServer.getInstance().getConsole().sendMessage(MessagesUtils.getColoredMessage("&cThere is a new version available. &e(&7"+result.getLatestVersion()+"&e)"));
-            ProxyServer.getInstance().getConsole().sendMessage(MessagesUtils.getColoredMessage("&cYou can download it at: &fhttps://www.spigotmc.org/resources/101752/"));
+            String latestVersion = result.getLatestVersion();
+            if(latestVersion != null){
+                ProxyServer.getInstance().getConsole().sendMessage(MessagesUtils.getColoredMessage("&cThere is a new version available. &e(&7"+latestVersion+"&e)"));
+                ProxyServer.getInstance().getConsole().sendMessage(MessagesUtils.getColoredMessage("&cYou can download it at: &fhttps://www.spigotmc.org/resources/101752/"));
+            }
         }else{
             ProxyServer.getInstance().getConsole().sendMessage(MessagesUtils.getColoredMessage(prefix+" &cError while checking update."));
         }

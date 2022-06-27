@@ -28,7 +28,7 @@ public class UpdateCheckerManager {
                     return UpdateCheckerResult.noErrors(latestVersion);
                 }
             }
-            return UpdateCheckerResult.error();
+            return UpdateCheckerResult.noErrors(null);
         } catch (Exception ex) {
             return UpdateCheckerResult.error();
         }

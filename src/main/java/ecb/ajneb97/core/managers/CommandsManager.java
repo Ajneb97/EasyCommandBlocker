@@ -50,49 +50,53 @@ public  class CommandsManager {
 
     public List<String> getTabCommands(List<String> permissions){
         List<TabCommandList> tabCommandLists = configStructure.getTabCommandList();
-        List<String> currentTabCommands = null;
-        List<String> defaultTabCommands = null;
+        TabCommandList currentTab = null;
+        TabCommandList defaultTab = null;
         int currentPriority = -1;
+
+        //Check TabCommandList for priority first
         for(TabCommandList t : tabCommandLists){
             if(t.getName().equals("default")){
-                defaultTabCommands = t.getCommands();
+                defaultTab = t;
                 continue;
             }
 
             String perm = t.getPermission();
             if(permissions.contains(perm)){
                 if(t.getPriority() > currentPriority){
-                    currentTabCommands = t.getCommands();
+                    currentTab = t;
                     currentPriority = t.getPriority();
-
-                    if(t.getExtendTabName() != null){
-                        currentTabCommands.addAll(getExtendsTabCommands(t.getExtendTabName(),
-                                new ArrayList<String>(),0));
-                    }
                 }
             }
         }
 
-        if(currentTabCommands != null){
+
+        if(currentTab != null){
+            //Check tab extends
+            List<String> currentTabCommands = new ArrayList<String>(currentTab.getCommands());
+            if(currentTab.getExtendTabName() != null){
+                currentTabCommands.addAll(getExtendsTabCommands(currentTab.getExtendTabName(),
+                        new ArrayList<String>(),0));
+            }
             return currentTabCommands;
         }else{
-            return defaultTabCommands;
+            return defaultTab.getCommands();
         }
     }
 
     public List<String> getExtendsTabCommands(String name,List<String> extendsTabCommandList,int currentIteration){
-        if(currentIteration >= 10){
+        if(currentIteration >= 30){
             //In case of stackoverflow
             return new ArrayList<String>();
         }
-        List<TabCommandList> tabCommandLists = configStructure.getTabCommandList();
-        TabCommandList tabCommandList = getTabCommandListByName(name,tabCommandLists);
 
-        extendsTabCommandList.addAll(tabCommandList.getCommands());
+        TabCommandList tabCommandList = getTabCommandListByName(name,configStructure.getTabCommandList());
+        String extendTabName = tabCommandList.getExtendTabName();
+        extendsTabCommandList.addAll(new ArrayList<String>(tabCommandList.getCommands()));
 
-        if(tabCommandList.getExtendTabName() != null){
+        if(extendTabName != null){
             currentIteration++;
-            return getExtendsTabCommands(tabCommandList.getExtendTabName(),extendsTabCommandList,currentIteration);
+            return getExtendsTabCommands(extendTabName,extendsTabCommandList,currentIteration);
         }else{
             return extendsTabCommandList;
         }

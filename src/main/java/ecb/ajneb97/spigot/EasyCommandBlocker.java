@@ -89,8 +89,11 @@ public class EasyCommandBlocker extends JavaPlugin {
 
     public void updateMessage(UpdateCheckerResult result){
         if(!result.isError()){
-            Bukkit.getConsoleSender().sendMessage(MessagesUtils.getColoredMessage("&cThere is a new version available. &e(&7"+result.getLatestVersion()+"&e)"));
-            Bukkit.getConsoleSender().sendMessage(MessagesUtils.getColoredMessage("&cYou can download it at: &fhttps://www.spigotmc.org/resources/101752/"));
+            String latestVersion = result.getLatestVersion();
+            if(latestVersion != null){
+                Bukkit.getConsoleSender().sendMessage(MessagesUtils.getColoredMessage("&cThere is a new version available. &e(&7"+latestVersion+"&e)"));
+                Bukkit.getConsoleSender().sendMessage(MessagesUtils.getColoredMessage("&cYou can download it at: &fhttps://www.spigotmc.org/resources/101752/"));
+            }
         }else{
             Bukkit.getConsoleSender().sendMessage(MessagesUtils.getColoredMessage(prefix+" &cError while checking update."));
         }
