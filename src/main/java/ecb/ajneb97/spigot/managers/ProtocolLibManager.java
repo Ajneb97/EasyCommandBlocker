@@ -58,10 +58,17 @@ public class ProtocolLibManager {
                     return;
                 }
 
+                boolean playerIsLegacy = pluginE.getViaVersionManager().playerIsLegacy(player);
                 if(OtherUtils.serverIsLegacy()){
-                    commandsWaiting.put(player.getUniqueId(),message);
-                }else if(pluginE.getViaVersionManager().playerIsLegacy(player)){
-                    event.setCancelled(true);
+                    if(playerIsLegacy){
+                        commandsWaiting.put(player.getUniqueId(),message);
+                    }else{
+                        event.setCancelled(true);
+                    }
+                }else{
+                    if(playerIsLegacy){
+                        event.setCancelled(true);
+                    }
                 }
             }
         };
@@ -71,12 +78,17 @@ public class ProtocolLibManager {
         return new PacketAdapter(plugin, ListenerPriority.HIGHEST, type) {
             @Override
             public void onPacketSending(PacketEvent event) {
-                if(!OtherUtils.serverIsLegacy()){
-                    return;
-                }
                 EasyCommandBlocker pluginE = (EasyCommandBlocker) plugin;
                 PacketContainer packet = event.getPacket();
                 Player player = event.getPlayer();
+
+                boolean playerIsLegacy = pluginE.getViaVersionManager().playerIsLegacy(player);
+                if(!playerIsLegacy || !OtherUtils.serverIsLegacy()){
+                    return;
+                }
+                if(player.isOp() || player.hasPermission("easycommandblocker.bypass.tab")){
+                    return;
+                }
 
                 StructureModifier<String[]> structureModifier = packet.getSpecificModifier(String[].class);
                 List<String> newSuggestions = new ArrayList<String>();
@@ -85,7 +97,7 @@ public class ProtocolLibManager {
                 commandsWaiting.remove(player.getUniqueId());
                 if(waitCommand == null){
                     //Empty completions
-                    structureModifier.write(0,newSuggestions.toArray(new String[0]));
+                    event.setCancelled(true);
                     return;
                 }
                 if(!waitCommand.startsWith("/")){
