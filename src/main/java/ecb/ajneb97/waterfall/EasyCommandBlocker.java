@@ -23,10 +23,12 @@ public class EasyCommandBlocker extends Plugin {
     private UpdateCheckerManager updateCheckerManager;
 
     public void onEnable(){
+        /*
         if(!ProxyServer.getInstance().getVersion().contains("Waterfall")){
             ProxyServer.getInstance().getConsole().sendMessage(MessagesUtils.getColoredMessage(prefix+" &cThe plugin requires Waterfall or Velocity to work!"));
             return;
         }
+         */
 
         getProxy().registerChannel(GlobalVariables.bungeeMainChannel);
         this.configManager = new ConfigManager(this.getDataFolder().toPath(),"bungee-config.yml","config.yml");

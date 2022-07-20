@@ -56,5 +56,4 @@ public class PlayerListener implements Listener {
             player.sendMessage(MessagesUtils.getColoredMessage("&cYou can download it at: &ahttps://www.spigotmc.org/resources/101752/"));
         }
     }
-
 }
