@@ -1,6 +1,8 @@
 package ecb.ajneb97.waterfall.utils;
 
 import net.md_5.bungee.api.ChatColor;
+import net.md_5.bungee.api.ProxyServer;
+import net.md_5.bungee.api.chat.BaseComponent;
 import net.md_5.bungee.api.chat.TextComponent;
 
 import java.util.regex.Matcher;
@@ -8,7 +10,7 @@ import java.util.regex.Pattern;
 
 public class MessagesUtils {
 
-    public static TextComponent getColoredMessage(String text) {
+    public static BaseComponent[] getColoredMessage(String text) {
         Pattern pattern = Pattern.compile("#[a-fA-F0-9]{6}");
         Matcher match = pattern.matcher(text);
 
@@ -20,6 +22,6 @@ public class MessagesUtils {
         }
 
         text = ChatColor.translateAlternateColorCodes('&', text);
-        return new TextComponent(text);
+        return TextComponent.fromLegacyText(text);
     }
 }
