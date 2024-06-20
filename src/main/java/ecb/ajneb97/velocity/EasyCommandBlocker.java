@@ -14,7 +14,7 @@ import java.nio.file.Path;
 import java.util.logging.Logger;
 
 @Plugin(id = "easycommandblocker", name = "EasyCommandBlocker",
-        version = "1.8.2", authors = {"Ajneb97"})
+        version = "1.9.1", authors = {"Ajneb97"})
 public class EasyCommandBlocker {
 
     private final ProxyServer server;

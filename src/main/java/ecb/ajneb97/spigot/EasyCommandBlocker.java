@@ -11,6 +11,7 @@ import ecb.ajneb97.spigot.managers.ProtocolLibManager;
 import ecb.ajneb97.spigot.managers.ViaVersionManager;
 import ecb.ajneb97.spigot.utils.MessagesUtils;
 import ecb.ajneb97.spigot.utils.OtherUtils;
+import ecb.ajneb97.spigot.utils.ServerVersion;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.plugin.PluginManager;
@@ -21,6 +22,7 @@ public class EasyCommandBlocker extends JavaPlugin {
     public static String prefix = "&8[&bEasy&9CommandBlocker&8]";
     private PluginDescriptionFile pdfFile = getDescription();
     public String version = pdfFile.getVersion();
+    public static ServerVersion serverVersion;
     private ProtocolLibManager protocolLibManager;
     private ViaVersionManager viaVersionManager;
     private BungeeMessagingManager bungeeMessagingManager;
@@ -29,6 +31,7 @@ public class EasyCommandBlocker extends JavaPlugin {
     private UpdateCheckerManager updateCheckerManager;
 
     public void onEnable(){
+        setVersion();
         this.configManager = new ConfigManager(this.getDataFolder().toPath(),"config.yml","config.yml");
         this.configManager.registerConfig();
         this.configManager.checkMessagesUpdate();
@@ -48,6 +51,22 @@ public class EasyCommandBlocker extends JavaPlugin {
 
     public void onDisable(){
         Bukkit.getConsoleSender().sendMessage(MessagesUtils.getColoredMessage(prefix+" &eHas been disabled! &fVersion: "+version));
+    }
+
+    public void setVersion(){
+        String packageName = Bukkit.getServer().getClass().getPackage().getName();
+        String bukkitVersion = Bukkit.getServer().getBukkitVersion().split("-")[0];
+        switch(bukkitVersion){
+            case "1.20.5":
+            case "1.20.6":
+                serverVersion = ServerVersion.v1_20_R4;
+                break;
+            case "1.21":
+                serverVersion = ServerVersion.v1_21_R1;
+                break;
+            default:
+                serverVersion = ServerVersion.valueOf(packageName.replace("org.bukkit.craftbukkit.", ""));
+        }
     }
 
     public void customReload(){
