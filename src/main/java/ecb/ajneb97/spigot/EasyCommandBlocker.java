@@ -62,6 +62,7 @@ public class EasyCommandBlocker extends JavaPlugin {
                 serverVersion = ServerVersion.v1_20_R4;
                 break;
             case "1.21":
+            case "1.21.1":
                 serverVersion = ServerVersion.v1_21_R1;
                 break;
             default:
