@@ -136,7 +136,7 @@ public  class CommandsManager {
             }
         }
         if(configStructure.isUseCommandsAsWhitelist()){
-            return new UseCommandResult(false,null);
+            return new UseCommandResult(false,commandWithArgs[0]);
         }
         return new UseCommandResult(true,null);
     }
