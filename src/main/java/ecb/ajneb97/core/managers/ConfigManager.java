@@ -6,7 +6,10 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.security.NoSuchAlgorithmException;
+import java.security.SecureRandom;
 import java.util.ArrayList;
+import java.util.Base64;
 import java.util.List;
 
 public class ConfigManager {
@@ -17,14 +20,14 @@ public class ConfigManager {
     private String originalFileName;
     private String newFileName;
 
-    public ConfigManager(Path dataDirectoryPath,String originalFileName,String newFileName){
+    public ConfigManager(Path dataDirectoryPath, String originalFileName, String newFileName) {
         this.dataDirectoryPath = dataDirectoryPath;
         this.originalFileName = originalFileName;
         this.newFileName = newFileName;
     }
 
     public void registerConfig() {
-        String path = dataDirectoryPath+File.separator+newFileName;
+        String path = dataDirectoryPath + File.separator + newFileName;
         createDefaultConfigFile();
 
         yamlFile = new YamlFile(path);
@@ -39,14 +42,14 @@ public class ConfigManager {
         }
     }
 
-    public void createDefaultConfigFile(){
+    public void createDefaultConfigFile() {
         File dataDirectoryFile = new File(dataDirectoryPath.toString());
-        if (!dataDirectoryFile.exists()){
+        if (!dataDirectoryFile.exists()) {
             dataDirectoryFile.mkdir();
         }
         File configFile = new File(dataDirectoryFile, newFileName);
         try {
-            if (!configFile.exists()){
+            if (!configFile.exists()) {
                 Files.copy(this.getClass().getClassLoader().getResourceAsStream(originalFileName), configFile.toPath());
             }
         } catch (IOException e) {
@@ -59,21 +62,33 @@ public class ConfigManager {
     }
 
     public void checkMessagesUpdate() {
-        Path configFile = Paths.get(dataDirectoryPath+File.separator+newFileName);
+        Path configFile = Paths.get(dataDirectoryPath + File.separator + newFileName);
         try {
             String configText = new String(Files.readAllBytes(configFile));
-            if(!configText.contains("custom_commands_actions:")){
-                List<String> list = new ArrayList<String>();
+            if (!yamlFile.contains("actions.enabled")) {
+                yamlFile.set("actions.enabled", true);
+                yamlFile.save();
+                yamlFile.load();
+            }
+
+            if (!yamlFile.contains("actions.key")) {
+                yamlFile.set("actions.key", generateKey(16));
+                yamlFile.save();
+                yamlFile.load();
+            }
+
+            if (!configText.contains("custom_commands_actions:")) {
+                List<String> list = new ArrayList<>();
                 list.add("/bungee");
                 yamlFile.set("custom_commands_actions.example1.commands", list);
-                list = new ArrayList<String>();
+                list = new ArrayList<>();
                 list.add("message: &8[&b&lECB&8] &cYou can't see the BungeeCord version!");
                 yamlFile.set("custom_commands_actions.example1.actions", list);
                 yamlFile.save();
                 yamlFile.load();
             }
 
-            if(!configText.contains("blocked_command_default_actions:")){
+            if (!configText.contains("blocked_command_default_actions:")) {
                 List<String> list = new ArrayList<String>();
                 list.add("message: &8[&b&lECB&8] &cYou don't have permissions to use that command.");
                 list.add("playsound: BLOCK_NOTE_BLOCK_PLING;10;0.1");
@@ -82,8 +97,19 @@ public class ConfigManager {
                 yamlFile.save();
                 yamlFile.load();
             }
-        }catch(IOException e){
-            e.printStackTrace();
+        } catch (IOException | NoSuchAlgorithmException e) {
+            throw new RuntimeException(e);
         }
+    }
+
+    public String generateKey(int length) throws NoSuchAlgorithmException {
+        SecureRandom secureRandom = new SecureRandom();
+        byte[] key = new byte[length];
+        secureRandom.nextBytes(key);
+        return Base64.getEncoder().encodeToString(key);
+    }
+
+    public YamlFile getYamlFile() {
+        return yamlFile;
     }
 }
