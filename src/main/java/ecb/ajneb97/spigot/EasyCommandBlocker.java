@@ -38,7 +38,9 @@ public class EasyCommandBlocker extends JavaPlugin {
         commandsManager = new CommandsManager(configManager.getConfig());
         registerCommands();
         registerEvents();
-        bungeeMessagingManager = new BungeeMessagingManager(this);
+        if (configManager.getYamlFile().get("settings.bungeecord") != null && configManager.getYamlFile().getBoolean("settings.bungeecord")) {
+            bungeeMessagingManager = new BungeeMessagingManager(this);
+        }
         protocolLibManager = new ProtocolLibManager(this);
         viaVersionManager = new ViaVersionManager(this);
 
@@ -77,6 +79,10 @@ public class EasyCommandBlocker extends JavaPlugin {
 
     public void registerCommands(){
         this.getCommand("ecb").setExecutor(new MainCommand(this));
+    }
+
+    public ConfigManager getConfigManager() {
+        return configManager;
     }
 
     public void registerEvents() {
