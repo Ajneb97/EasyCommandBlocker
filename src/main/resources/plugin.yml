@@ -4,6 +4,7 @@ name: EasyCommandBlocker
 api-version: 1.13
 softdepend: [ProtocolLib,ViaVersion]
 author: Ajneb97
+folia-supported: true
 
 commands:
   easycommandblocker:
