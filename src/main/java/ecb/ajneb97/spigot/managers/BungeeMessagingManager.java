@@ -13,7 +13,7 @@ public class BungeeMessagingManager implements PluginMessageListener {
 
     private EasyCommandBlocker plugin;
     public BungeeMessagingManager(EasyCommandBlocker plugin){
-        if (!Bukkit.getServer().spigot().getConfig().getBoolean( "settings.bungeecord" ) ) {
+        if(!plugin.getConfigManager().getConfig().getBoolean("is_network")){
             return;
         }
 

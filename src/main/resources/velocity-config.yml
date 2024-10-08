@@ -4,6 +4,8 @@ tab:
     commands: []
 blocked_command_default_actions:
   - "message: &8[&b&lECB&8] &cYou don't have permissions to use that command."
+  - "playsound: BLOCK_NOTE_BLOCK_PLING;10;0.1"
+  - "title: 20;40;20;&cWhat are you doing?;&7Don't use that command!"
 use_commands_as_whitelist: false
 commands:
   - "/velocity"

@@ -16,11 +16,13 @@ public class ConfigManager {
     private Path dataDirectoryPath;
     private String originalFileName;
     private String newFileName;
+    private boolean isProxy;
 
-    public ConfigManager(Path dataDirectoryPath,String originalFileName,String newFileName){
+    public ConfigManager(Path dataDirectoryPath,String originalFileName,String newFileName,boolean isProxy){
         this.dataDirectoryPath = dataDirectoryPath;
         this.originalFileName = originalFileName;
         this.newFileName = newFileName;
+        this.isProxy = isProxy;
     }
 
     public void registerConfig() {
@@ -62,6 +64,14 @@ public class ConfigManager {
         Path configFile = Paths.get(dataDirectoryPath+File.separator+newFileName);
         try {
             String configText = new String(Files.readAllBytes(configFile));
+            if(!isProxy){
+                if(!configText.contains("is_network:")){
+                    yamlFile.set("is_network", false);
+                    yamlFile.save();
+                    yamlFile.load();
+                }
+            }
+
             if(!configText.contains("custom_commands_actions:")){
                 List<String> list = new ArrayList<String>();
                 list.add("/bungee");

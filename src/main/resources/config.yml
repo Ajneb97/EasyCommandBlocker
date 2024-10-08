@@ -12,6 +12,7 @@ blocked_command_default_actions:
   - "playsound: BLOCK_NOTE_BLOCK_PLING;10;0.1"
   - "title: 20;40;20;&cWhat are you doing?;&7Don't use that command!"
 use_commands_as_whitelist: false
+is_network: false
 commands:
   - "/?"
   - "/bukkit:?"

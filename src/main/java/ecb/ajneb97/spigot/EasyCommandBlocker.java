@@ -32,7 +32,7 @@ public class EasyCommandBlocker extends JavaPlugin {
 
     public void onEnable(){
         setVersion();
-        this.configManager = new ConfigManager(this.getDataFolder().toPath(),"config.yml","config.yml");
+        this.configManager = new ConfigManager(this.getDataFolder().toPath(),"config.yml","config.yml",false);
         this.configManager.registerConfig();
         this.configManager.checkMessagesUpdate();
         commandsManager = new CommandsManager(configManager.getConfig());
@@ -117,5 +117,9 @@ public class EasyCommandBlocker extends JavaPlugin {
         }else{
             Bukkit.getConsoleSender().sendMessage(MessagesUtils.getColoredMessage(prefix+" &cError while checking update."));
         }
+    }
+
+    public ConfigManager getConfigManager() {
+        return configManager;
     }
 }

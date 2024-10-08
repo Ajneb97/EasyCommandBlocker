@@ -9,14 +9,15 @@ import ecb.ajneb97.core.model.GlobalVariables;
 
 public class PluginMessagingUtils {
 
+    public static final MinecraftChannelIdentifier IDENTIFIER = MinecraftChannelIdentifier.from(GlobalVariables.bungeeMainChannel);
+
     public static void sendMessage(Player player, String subChannel, String data) {
         ByteArrayDataOutput out = ByteStreams.newDataOutput();
         out.writeUTF(subChannel);
         out.writeUTF(data);
 
         player.getCurrentServer().ifPresent((ServerConnection serverConnection) -> {
-            MinecraftChannelIdentifier channelIdentifier = MinecraftChannelIdentifier.from(GlobalVariables.bungeeMainChannel);
-            serverConnection.sendPluginMessage(channelIdentifier,out.toByteArray());
+            serverConnection.sendPluginMessage(IDENTIFIER,out.toByteArray());
         });
     }
 }
