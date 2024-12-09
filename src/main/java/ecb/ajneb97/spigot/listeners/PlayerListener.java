@@ -51,7 +51,7 @@ public class PlayerListener implements Listener {
     public void updateNotification(PlayerJoinEvent event){
         Player player = event.getPlayer();
         String latestVersion = plugin.getUpdateCheckerManager().getLatestVersion();
-        if(player.isOp() && !(plugin.version.equals(latestVersion))){
+        if(player.isOp() && plugin.getConfigManager().getConfig().getBoolean("update_notify") && !plugin.version.equals(latestVersion)){
             player.sendMessage(MessagesUtils.getColoredMessage(plugin.prefix+" &cThere is a new version available. &e(&7"+latestVersion+"&e)"));
             player.sendMessage(MessagesUtils.getColoredMessage("&cYou can download it at: &ahttps://www.spigotmc.org/resources/101752/"));
         }

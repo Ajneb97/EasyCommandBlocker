@@ -65,6 +65,11 @@ public class ConfigManager {
         try {
             String configText = new String(Files.readAllBytes(configFile));
             if(!isProxy){
+                if(!configText.contains("update_notify:")){
+                    yamlFile.set("update_notify", true);
+                    yamlFile.save();
+                    yamlFile.load();
+                }
                 if(!configText.contains("is_network:")){
                     yamlFile.set("is_network", false);
                     yamlFile.save();
