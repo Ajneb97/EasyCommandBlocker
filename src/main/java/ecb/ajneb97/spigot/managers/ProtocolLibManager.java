@@ -26,7 +26,8 @@ public class ProtocolLibManager {
     public ProtocolLibManager(EasyCommandBlocker plugin){
         this.plugin = plugin;
         this.enabled = false;
-        if(Bukkit.getServer().getPluginManager().getPlugin("ProtocolLib") != null) {
+        if(Bukkit.getServer().getPluginManager().getPlugin("ProtocolLib") != null
+            && Bukkit.getServer().getPluginManager().getPlugin("ProtocolLib").isEnabled()) {
             this.enabled = true;
             PacketAdapter packet1 = getTabClientAdapter(PacketType.Play.Client.TAB_COMPLETE);
             ProtocolLibrary.getProtocolManager().addPacketListener(packet1);
