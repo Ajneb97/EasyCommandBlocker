@@ -7,7 +7,7 @@ import ecb.ajneb97.core.model.internal.UpdateCheckerResult;
 import ecb.ajneb97.spigot.listeners.PlayerListener;
 import ecb.ajneb97.spigot.listeners.PlayerListenerNew;
 import ecb.ajneb97.spigot.managers.BungeeMessagingManager;
-import ecb.ajneb97.spigot.managers.ProtocolLibManager;
+import ecb.ajneb97.spigot.managers.PacketEventsManager;
 import ecb.ajneb97.spigot.managers.ViaVersionManager;
 import ecb.ajneb97.spigot.utils.MessagesUtils;
 import ecb.ajneb97.spigot.utils.OtherUtils;
@@ -23,23 +23,32 @@ public class EasyCommandBlocker extends JavaPlugin {
     private PluginDescriptionFile pdfFile = getDescription();
     public String version = pdfFile.getVersion();
     public static ServerVersion serverVersion;
-    private ProtocolLibManager protocolLibManager;
+
+    private PacketEventsManager packetEventsManager;
     private ViaVersionManager viaVersionManager;
     private BungeeMessagingManager bungeeMessagingManager;
     private CommandsManager commandsManager;
     private ConfigManager configManager;
     private UpdateCheckerManager updateCheckerManager;
 
+    @Override
+    public void onLoad() {
+        // PacketEvents'i burada yükle
+        packetEventsManager = new PacketEventsManager(this);
+    }
+
     public void onEnable(){
         setVersion();
+
         this.configManager = new ConfigManager(this.getDataFolder().toPath(),"config.yml","config.yml",false);
         this.configManager.registerConfig();
         this.configManager.checkMessagesUpdate();
+
         commandsManager = new CommandsManager(configManager.getConfig());
         registerCommands();
         registerEvents();
+
         bungeeMessagingManager = new BungeeMessagingManager(this);
-        protocolLibManager = new ProtocolLibManager(this);
         viaVersionManager = new ViaVersionManager(this);
 
         Bukkit.getConsoleSender().sendMessage(MessagesUtils.getColoredMessage(prefix+" &eHas been enabled! &fVersion: "+version));
@@ -50,12 +59,18 @@ public class EasyCommandBlocker extends JavaPlugin {
     }
 
     public void onDisable(){
+        // PacketEvents'i kapat
+        if(packetEventsManager != null) {
+            packetEventsManager.terminate();
+        }
+
         Bukkit.getConsoleSender().sendMessage(MessagesUtils.getColoredMessage(prefix+" &eHas been disabled! &fVersion: "+version));
     }
 
     public void setVersion(){
         String packageName = Bukkit.getServer().getClass().getPackage().getName();
         String bukkitVersion = Bukkit.getServer().getBukkitVersion().split("-")[0];
+
         switch(bukkitVersion){
             case "1.20.5":
             case "1.20.6":
@@ -105,8 +120,8 @@ public class EasyCommandBlocker extends JavaPlugin {
         }
     }
 
-    public ProtocolLibManager getProtocolLibManager() {
-        return protocolLibManager;
+    public PacketEventsManager getPacketEventsManager() {
+        return packetEventsManager;
     }
 
     public ViaVersionManager getViaVersionManager() {

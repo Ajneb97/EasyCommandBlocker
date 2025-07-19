@@ -3,7 +3,7 @@ version: 1.14.2
 name: EasyCommandBlocker
 api-version: 1.13
 softdepend: [ViaVersion]
-depend: [ProtocolLib]
+depend: [packetevents]
 author: Ajneb97
 
 commands:
