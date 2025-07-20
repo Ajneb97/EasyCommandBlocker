@@ -1,4 +1,4 @@
 main: ecb.ajneb97.waterfall.EasyCommandBlocker
-version: 1.14.2
+version: ${project.version}
 name: EasyCommandBlocker
 author: Ajneb97
