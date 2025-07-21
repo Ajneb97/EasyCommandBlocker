@@ -14,6 +14,12 @@ blocked_command_default_actions:
 use_commands_as_whitelist: false
 is_network: false
 update_notify: true
+# Packet library to use for tab completion blocking
+# Options: "protocollib", "packetevents", "auto"
+# - protocollib: Use ProtocolLib (requires ProtocolLib plugin)
+# - packetevents: Use PacketEvents (requires PacketEvents plugin)
+# - auto: Automatically detect and use available library (ProtocolLib preferred)
+packet_library: "auto"
 commands:
   - "/?"
   - "/bukkit:?"
