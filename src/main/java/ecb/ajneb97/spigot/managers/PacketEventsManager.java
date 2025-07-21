@@ -19,7 +19,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.UUID;
 
-public class PacketEventsManager {
+public class PacketEventsManager implements PacketManager {
     private EasyCommandBlocker plugin;
     private boolean enabled;
     private HashMap<UUID, String> commandsWaiting = new HashMap<>();
@@ -29,15 +29,18 @@ public class PacketEventsManager {
         this.plugin = plugin;
         this.enabled = false;
 
-        // PacketEvents otomatik olarak yüklenir, eklenti kontrolüne gerek yok
+        // PacketEvents loads automatically, no plugin control needed
         try {
-            // PacketEvents API'nin hazır olup olmadığını kontrol et
+            // Check if PacketEvents API is ready
             if (PacketEvents.getAPI() != null) {
                 this.enabled = true;
+                plugin.getLogger().info("Using PacketEvents for packet management");
 
-                // Packet listener'ı kaydet
+                // Register packet listener
                 tabCompleteListener = new TabCompleteListener(PacketListenerPriority.HIGHEST);
                 PacketEvents.getAPI().getEventManager().registerListener(tabCompleteListener);
+            } else {
+                plugin.getLogger().warning("PacketEvents API not available");
             }
         } catch (Exception e) {
             plugin.getLogger().warning("PacketEvents could not be initialized: " + e.getMessage());
@@ -47,6 +50,11 @@ public class PacketEventsManager {
 
     public boolean isEnabled() {
         return enabled;
+    }
+
+    @Override
+    public String getLibraryName() {
+        return "PacketEvents";
     }
 
     private class TabCompleteListener extends PacketListenerAbstract {
@@ -170,14 +178,14 @@ public class PacketEventsManager {
         }
     }
 
-    // Eklentinin kapatılması sırasında çağrılacak temizleme metodu
+    // Cleanup method called when plugin is disabled
     public void terminate() {
         if (enabled && tabCompleteListener != null) {
             try {
-                // Listener'ı kaldır
+                // Remove listener
                 PacketEvents.getAPI().getEventManager().unregisterListener(tabCompleteListener);
             } catch (Exception e) {
-                // Hata durumunda sessizce devam et
+                // Continue silently on error
             }
         }
         commandsWaiting.clear();

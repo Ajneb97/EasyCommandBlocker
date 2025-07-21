@@ -2,8 +2,7 @@ main: ecb.ajneb97.spigot.EasyCommandBlocker
 version: 1.14.2
 name: EasyCommandBlocker
 api-version: 1.13
-softdepend: [ViaVersion]
-depend: [packetevents]
+softdepend: [ViaVersion, ProtocolLib, packetevents]
 author: Ajneb97
 
 commands:

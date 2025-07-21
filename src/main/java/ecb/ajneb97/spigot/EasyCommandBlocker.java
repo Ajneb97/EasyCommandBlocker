@@ -8,6 +8,8 @@ import ecb.ajneb97.spigot.listeners.PlayerListener;
 import ecb.ajneb97.spigot.listeners.PlayerListenerNew;
 import ecb.ajneb97.spigot.managers.BungeeMessagingManager;
 import ecb.ajneb97.spigot.managers.PacketEventsManager;
+import ecb.ajneb97.spigot.managers.PacketManager;
+import ecb.ajneb97.spigot.managers.ProtocolLibManager;
 import ecb.ajneb97.spigot.managers.ViaVersionManager;
 import ecb.ajneb97.spigot.utils.MessagesUtils;
 import ecb.ajneb97.spigot.utils.OtherUtils;
@@ -24,7 +26,7 @@ public class EasyCommandBlocker extends JavaPlugin {
     public String version = pdfFile.getVersion();
     public static ServerVersion serverVersion;
 
-    private PacketEventsManager packetEventsManager;
+    private PacketManager packetManager;
     private ViaVersionManager viaVersionManager;
     private BungeeMessagingManager bungeeMessagingManager;
     private CommandsManager commandsManager;
@@ -33,8 +35,8 @@ public class EasyCommandBlocker extends JavaPlugin {
 
     @Override
     public void onLoad() {
-        // PacketEvents'i burada yükle
-        packetEventsManager = new PacketEventsManager(this);
+        // Initialize packet manager early for PacketEvents
+        initializePacketManager();
     }
 
     public void onEnable(){
@@ -44,12 +46,24 @@ public class EasyCommandBlocker extends JavaPlugin {
         this.configManager.registerConfig();
         this.configManager.checkMessagesUpdate();
 
+        // Initialize packet manager if not already done in onLoad
+        if(packetManager == null) {
+            initializePacketManager();
+        }
+
         commandsManager = new CommandsManager(configManager.getConfig());
         registerCommands();
         registerEvents();
 
         bungeeMessagingManager = new BungeeMessagingManager(this);
         viaVersionManager = new ViaVersionManager(this);
+
+        // Log packet manager status
+        if(packetManager != null && packetManager.isEnabled()) {
+            Bukkit.getConsoleSender().sendMessage(MessagesUtils.getColoredMessage(prefix+" &aPacket manager initialized: " + packetManager.getLibraryName()));
+        } else {
+            Bukkit.getConsoleSender().sendMessage(MessagesUtils.getColoredMessage(prefix+" &cNo packet manager available - tab completion blocking disabled"));
+        }
 
         Bukkit.getConsoleSender().sendMessage(MessagesUtils.getColoredMessage(prefix+" &eHas been enabled! &fVersion: "+version));
         Bukkit.getConsoleSender().sendMessage(MessagesUtils.getColoredMessage(prefix+" &eThanks for using my plugin!   &f~Ajneb97"));
@@ -59,12 +73,73 @@ public class EasyCommandBlocker extends JavaPlugin {
     }
 
     public void onDisable(){
-        // PacketEvents'i kapat
-        if(packetEventsManager != null) {
-            packetEventsManager.terminate();
+        // Close packet manager
+        if(packetManager != null) {
+            packetManager.terminate();
         }
 
         Bukkit.getConsoleSender().sendMessage(MessagesUtils.getColoredMessage(prefix+" &eHas been disabled! &fVersion: "+version));
+    }
+
+    /**
+     * Initialize the appropriate packet manager based on configuration
+     */
+    private void initializePacketManager() {
+        String packetLibrary = "auto"; // default value
+        
+        // Try to get configuration if available
+        if(configManager != null && configManager.getConfig() != null) {
+            packetLibrary = configManager.getConfig().getString("packet_library", "auto");
+        }
+        
+        PacketManager protocolLibManager = null;
+        PacketManager packetEventsManager = null;
+        
+        // Initialize managers based on availability
+        if(!"packetevents".equals(packetLibrary)) {
+            try {
+                protocolLibManager = new ProtocolLibManager(this);
+            } catch (Exception e) {
+                getLogger().info("ProtocolLib not available: " + e.getMessage());
+            }
+        }
+        
+        if(!"protocollib".equals(packetLibrary)) {
+            try {
+                packetEventsManager = new PacketEventsManager(this);
+            } catch (Exception e) {
+                getLogger().info("PacketEvents not available: " + e.getMessage());
+            }
+        }
+        
+        // Choose the appropriate manager
+        switch(packetLibrary.toLowerCase()) {
+            case "protocollib":
+                if(protocolLibManager != null && protocolLibManager.isEnabled()) {
+                    this.packetManager = protocolLibManager;
+                } else {
+                    getLogger().warning("ProtocolLib was requested but is not available");
+                }
+                break;
+            case "packetevents":
+                if(packetEventsManager != null && packetEventsManager.isEnabled()) {
+                    this.packetManager = packetEventsManager;
+                } else {
+                    getLogger().warning("PacketEvents was requested but is not available");
+                }
+                break;
+            case "auto":
+            default:
+                // Prefer ProtocolLib if available, fallback to PacketEvents
+                if(protocolLibManager != null && protocolLibManager.isEnabled()) {
+                    this.packetManager = protocolLibManager;
+                } else if(packetEventsManager != null && packetEventsManager.isEnabled()) {
+                    this.packetManager = packetEventsManager;
+                } else {
+                    getLogger().warning("Neither ProtocolLib nor PacketEvents is available for tab completion blocking");
+                }
+                break;
+        }
     }
 
     public void setVersion(){
@@ -120,8 +195,24 @@ public class EasyCommandBlocker extends JavaPlugin {
         }
     }
 
+    /**
+     * Get the active packet manager
+     * @return the active packet manager (ProtocolLib or PacketEvents)
+     */
+    public PacketManager getPacketManager() {
+        return packetManager;
+    }
+
+    /**
+     * @deprecated Use getPacketManager() instead. This method is kept for backward compatibility.
+     * @return the packet manager if it's PacketEventsManager, null otherwise
+     */
+    @Deprecated
     public PacketEventsManager getPacketEventsManager() {
-        return packetEventsManager;
+        if(packetManager instanceof PacketEventsManager) {
+            return (PacketEventsManager) packetManager;
+        }
+        return null;
     }
 
     public ViaVersionManager getViaVersionManager() {
