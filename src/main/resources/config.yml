@@ -14,6 +14,9 @@ blocked_command_default_actions:
 use_commands_as_whitelist: false
 is_network: false
 update_notify: true
+use_packet_events_instead_of_protocol_lib: false
+# This only works if you remove * permission from all players using your permission plugin
+can_ops_bypass: true
 commands:
   - "/?"
   - "/bukkit:?"

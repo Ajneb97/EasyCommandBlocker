@@ -21,7 +21,7 @@ public class PlayerListenerNew implements Listener {
     public void onCommandSend(PlayerCommandSendEvent event){
         Player player = event.getPlayer();
 
-        if(player.isOp() || player.hasPermission("easycommandblocker.bypass.tab")){
+        if((player.isOp() && plugin.getConfigManager().getConfig().getBoolean("can_ops_bypass")) || player.hasPermission("easycommandblocker.bypass.tab")){
             return;
         }
         CommandsManager commandsManager = plugin.getCommandsManager();

@@ -1,5 +1,6 @@
 package ecb.ajneb97.spigot;
 
+import com.github.retrooper.packetevents.PacketEvents;
 import ecb.ajneb97.core.managers.CommandsManager;
 import ecb.ajneb97.core.managers.ConfigManager;
 import ecb.ajneb97.core.managers.UpdateCheckerManager;
@@ -7,6 +8,7 @@ import ecb.ajneb97.core.model.internal.UpdateCheckerResult;
 import ecb.ajneb97.spigot.listeners.PlayerListener;
 import ecb.ajneb97.spigot.listeners.PlayerListenerNew;
 import ecb.ajneb97.spigot.managers.BungeeMessagingManager;
+import ecb.ajneb97.spigot.managers.PacketEventsManager;
 import ecb.ajneb97.spigot.managers.ProtocolLibManager;
 import ecb.ajneb97.spigot.managers.ViaVersionManager;
 import ecb.ajneb97.spigot.utils.MessagesUtils;
@@ -24,14 +26,25 @@ public class EasyCommandBlocker extends JavaPlugin {
     public String version = pdfFile.getVersion();
     public static ServerVersion serverVersion;
     private ProtocolLibManager protocolLibManager;
+    private PacketEventsManager packetEventsManager;
     private ViaVersionManager viaVersionManager;
     private BungeeMessagingManager bungeeMessagingManager;
     private CommandsManager commandsManager;
     private ConfigManager configManager;
     private UpdateCheckerManager updateCheckerManager;
 
-    public void onEnable(){
+    public void onLoad() {
         setVersion();
+        this.configManager = new ConfigManager(this.getDataFolder().toPath(),"config.yml","config.yml",false);
+        this.configManager.registerConfig();
+        this.configManager.checkMessagesUpdate();
+        commandsManager = new CommandsManager(configManager.getConfig());
+        if (this.getConfigManager().getConfig().getBoolean("use_packet_events_instead_of_protocol_lib")) {
+            packetEventsManager = new PacketEventsManager(this);
+        }
+    }
+
+    public void onEnable(){
         this.configManager = new ConfigManager(this.getDataFolder().toPath(),"config.yml","config.yml",false);
         this.configManager.registerConfig();
         this.configManager.checkMessagesUpdate();
@@ -39,7 +52,15 @@ public class EasyCommandBlocker extends JavaPlugin {
         registerCommands();
         registerEvents();
         bungeeMessagingManager = new BungeeMessagingManager(this);
-        protocolLibManager = new ProtocolLibManager(this);
+
+        if (packetEventsManager != null) {
+            PacketEvents.getAPI().init();
+            packetEventsManager.register();
+        } else {
+            protocolLibManager = new ProtocolLibManager(this);
+        }
+
+
         viaVersionManager = new ViaVersionManager(this);
 
         Bukkit.getConsoleSender().sendMessage(MessagesUtils.getColoredMessage(prefix+" &eHas been enabled! &fVersion: "+version));
@@ -51,6 +72,9 @@ public class EasyCommandBlocker extends JavaPlugin {
 
     public void onDisable(){
         Bukkit.getConsoleSender().sendMessage(MessagesUtils.getColoredMessage(prefix+" &eHas been disabled! &fVersion: "+version));
+        if (packetEventsManager != null) {
+            packetEventsManager.terminate();
+        }
     }
 
     public void setVersion(){
@@ -92,6 +116,17 @@ public class EasyCommandBlocker extends JavaPlugin {
     public void customReload(){
         configManager.registerConfig();
         this.commandsManager.load(configManager.getConfig());
+
+        if (protocolLibManager != null) protocolLibManager.unregisterAdapters();
+        if (packetEventsManager != null) packetEventsManager.terminate();
+
+        if (configManager.getConfig().getBoolean("use_packet_events_instead_of_protocol_lib")) {
+            this.packetEventsManager = new PacketEventsManager(this);
+            PacketEvents.getAPI().init();
+            packetEventsManager.register();
+        } else {
+            this.protocolLibManager = new ProtocolLibManager(this);
+        }
     }
 
     public void registerCommands(){

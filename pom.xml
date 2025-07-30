@@ -6,7 +6,7 @@
 
     <groupId>ecb.ajneb97</groupId>
     <artifactId>EasyCommandBlocker</artifactId>
-    <version>1.14.3</version>
+    <version>1.15.0</version>
     <packaging>jar</packaging>
 
     <properties>
@@ -34,6 +34,14 @@
         <repository>
             <id>jitpack.io</id>
             <url>https://jitpack.io</url>
+        </repository>
+        <repository>
+            <id>codemc-releases</id>
+            <url>https://repo.codemc.io/repository/maven-releases/</url>
+        </repository>
+        <repository>
+            <id>codemc-snapshots</id>
+            <url>https://repo.codemc.io/repository/maven-snapshots/</url>
         </repository>
     </repositories>
 
@@ -69,15 +77,23 @@
             <scope>provided</scope>
         </dependency>
         <dependency>
-            <groupId>me.carleslc.Simple-YAML</groupId>
+            <groupId>com.github.Carleslc.Simple-YAML</groupId>
             <artifactId>Simple-Yaml</artifactId>
-            <version>1.8</version>
+            <version>1.8.4</version>
         </dependency>
         <dependency>
             <groupId>org.yaml</groupId>
             <artifactId>snakeyaml</artifactId>
             <version>1.30</version>
         </dependency>
+        <dependency>
+            <groupId>com.github.retrooper</groupId>
+            <artifactId>packetevents-spigot</artifactId>
+            <version>2.9.3</version>
+            <scope>provided</scope>
+        </dependency>
+
+
     </dependencies>
 
     <build>

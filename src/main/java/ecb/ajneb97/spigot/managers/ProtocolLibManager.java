@@ -40,6 +40,10 @@ public class ProtocolLibManager {
         return enabled;
     }
 
+    public void unregisterAdapters() {
+        ProtocolLibrary.getProtocolManager().removePacketListeners(plugin);
+    }
+
     public PacketAdapter getTabClientAdapter(PacketType type) {
         return new PacketAdapter(plugin, ListenerPriority.HIGHEST, type) {
             @Override
@@ -51,7 +55,7 @@ public class ProtocolLibManager {
                 if(event.isCancelled()){
                     return;
                 }
-                if(player.isOp() || player.hasPermission("easycommandblocker.bypass.tab")){
+                if((player.isOp() && pluginE.getConfigManager().getConfig().getBoolean("can_ops_bypass")) || player.hasPermission("easycommandblocker.bypass.tab")){
                     return;
                 }
                 String message = (packet.getSpecificModifier(String.class).read(0));
@@ -87,7 +91,7 @@ public class ProtocolLibManager {
                 if(!playerIsLegacy || !OtherUtils.serverIsLegacy()){
                     return;
                 }
-                if(player.isOp() || player.hasPermission("easycommandblocker.bypass.tab")){
+                if((player.isOp() && pluginE.getConfigManager().getConfig().getBoolean("can_ops_bypass")) || player.hasPermission("easycommandblocker.bypass.tab")){
                     return;
                 }
 
