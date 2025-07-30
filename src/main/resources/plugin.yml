@@ -3,7 +3,7 @@ version: ${project.version}
 name: EasyCommandBlocker
 api-version: 1.13
 softdepend: [ViaVersion]
-depend: [ProtocolLib]
+depend: [ProtocolLib,packetevents]
 author: Ajneb97
 
 commands:
