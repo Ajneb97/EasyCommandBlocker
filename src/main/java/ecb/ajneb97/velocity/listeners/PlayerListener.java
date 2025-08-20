@@ -27,6 +27,11 @@ public class PlayerListener {
             Player player = (Player) event.getCommandSource();
             String command = "/"+event.getCommand();
 
+            boolean isProxyCommand = plugin.getServer().getCommandManager().hasCommand(event.getCommand().split(" ")[0].toLowerCase());
+            if(!isProxyCommand){
+                return;
+            }
+
             if(player.hasPermission("easycommandblocker.bypass.commands")){
                 return;
             }

@@ -6,7 +6,7 @@
 
     <groupId>ecb.ajneb97</groupId>
     <artifactId>EasyCommandBlocker</artifactId>
-    <version>1.14.3</version>
+    <version>1.14.4</version>
     <packaging>jar</packaging>
 
     <properties>
@@ -29,7 +29,7 @@
         </repository>
         <repository>
             <id>papermc</id>
-            <url>https://papermc.io/repo/repository/maven-public/</url>
+            <url>https://repo.papermc.io/repository/maven-public/</url>
         </repository>
         <repository>
             <id>jitpack.io</id>
@@ -65,7 +65,7 @@
         <dependency>
             <groupId>com.velocitypowered</groupId>
             <artifactId>velocity-api</artifactId>
-            <version>3.3.0-SNAPSHOT</version>
+            <version>3.4.0-SNAPSHOT</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
