@@ -89,11 +89,14 @@ public class EasyCommandBlocker extends JavaPlugin {
             case "1.21.11":
                 serverVersion = ServerVersion.v1_21_R7;
                 break;
+            case "26.1":
+                serverVersion = ServerVersion.v26_1;
+                break;
             default:
                 try{
                     serverVersion = ServerVersion.valueOf(packageName.replace("org.bukkit.craftbukkit.", ""));
                 }catch(Exception e){
-                    serverVersion = ServerVersion.v1_21_R7;
+                    serverVersion = ServerVersion.v26_1;
                 }
         }
     }
@@ -140,7 +143,7 @@ public class EasyCommandBlocker extends JavaPlugin {
             String latestVersion = result.getLatestVersion();
             if(latestVersion != null){
                 Bukkit.getConsoleSender().sendMessage(MessagesUtils.getColoredMessage("&cThere is a new version available. &e(&7"+latestVersion+"&e)"));
-                Bukkit.getConsoleSender().sendMessage(MessagesUtils.getColoredMessage("&cYou can download it at: &fhttps://www.spigotmc.org/resources/101752/"));
+                Bukkit.getConsoleSender().sendMessage(MessagesUtils.getColoredMessage("&cYou can download it at: &fhttps://modrinth.com/plugin/easy-command-blocker"));
             }
         }else{
             Bukkit.getConsoleSender().sendMessage(MessagesUtils.getColoredMessage(prefix+" &cError while checking update."));

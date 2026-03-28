@@ -2,6 +2,7 @@ package ecb.ajneb97.velocity;
 
 import com.velocitypowered.api.command.CommandSource;
 import com.velocitypowered.api.command.SimpleCommand;
+import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 
 public class MainCommand implements SimpleCommand {
@@ -29,6 +30,6 @@ public class MainCommand implements SimpleCommand {
 
     public void reload(CommandSource source){
         plugin.customReload();
-        source.sendMessage(LegacyComponentSerializer.legacyAmpersand().deserialize(plugin.prefix+" &aConfig reloaded!"));
+        source.sendMessage(MiniMessage.miniMessage().deserialize(plugin.prefix+" <green>Config reloaded!"));
     }
 }

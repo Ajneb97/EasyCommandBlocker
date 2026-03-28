@@ -6,18 +6,22 @@ import com.velocitypowered.api.event.Subscribe;
 import com.velocitypowered.api.event.connection.PluginMessageEvent;
 import com.velocitypowered.api.event.proxy.ProxyInitializeEvent;
 import com.velocitypowered.api.plugin.Plugin;
+import com.velocitypowered.api.plugin.PluginContainer;
 import com.velocitypowered.api.plugin.annotation.DataDirectory;
 import com.velocitypowered.api.proxy.ProxyServer;
 import ecb.ajneb97.core.managers.CommandsManager;
 import ecb.ajneb97.core.managers.ConfigManager;
+import ecb.ajneb97.core.managers.UpdateCheckerManager;
+import ecb.ajneb97.core.model.internal.UpdateCheckerResult;
 import ecb.ajneb97.velocity.listeners.PlayerListener;
 import ecb.ajneb97.velocity.utils.PluginMessagingUtils;
+import net.kyori.adventure.text.minimessage.MiniMessage;
 
 import java.nio.file.Path;
 import java.util.logging.Logger;
 
 @Plugin(id = "easycommandblocker", name = "EasyCommandBlocker",
-        version = "1.16.2", authors = {"Ajneb97"})
+        version = "1.17.1", authors = {"Ajneb97"})
 public class EasyCommandBlocker {
 
     private final ProxyServer server;
@@ -25,13 +29,17 @@ public class EasyCommandBlocker {
     private final Path dataDirectory;
     private CommandsManager commandsManager;
     private ConfigManager configManager;
-    public String prefix = "&8[&bEasy&9CommandBlocker&8]";
+    public String prefix = "<dark_gray>[<aqua>Easy<blue>CommandBlocker<dark_gray>]";
+    private final PluginContainer container;
+
+    private UpdateCheckerManager updateCheckerManager;
 
     @Inject
-    public EasyCommandBlocker(ProxyServer server, Logger logger, @DataDirectory Path dataDirectory) {
+    public EasyCommandBlocker(ProxyServer server, Logger logger, @DataDirectory Path dataDirectory, PluginContainer container) {
         this.server = server;
         this.logger = logger;
         this.dataDirectory = dataDirectory;
+        this.container = container;
     }
 
     @Subscribe
@@ -47,6 +55,9 @@ public class EasyCommandBlocker {
         server.getCommandManager().register(meta, new MainCommand(this));
 
         server.getChannelRegistrar().register(PluginMessagingUtils.IDENTIFIER);
+
+        updateCheckerManager = new UpdateCheckerManager(container.getDescription().getVersion().orElse("Unknown"));
+        updateMessage(updateCheckerManager.check());
     }
 
     @Subscribe
@@ -70,5 +81,17 @@ public class EasyCommandBlocker {
     public void customReload(){
         configManager.registerConfig();
         this.commandsManager.load(configManager.getConfig());
+    }
+
+    public void updateMessage(UpdateCheckerResult result){
+        if(!result.isError()){
+            String latestVersion = result.getLatestVersion();
+            if(latestVersion != null){
+                getServer().getConsoleCommandSource().sendMessage(MiniMessage.miniMessage().deserialize(prefix+" <red>There is a new version available. <yellow>(<gray>"+latestVersion+"<yellow>)"));
+                getServer().getConsoleCommandSource().sendMessage(MiniMessage.miniMessage().deserialize(prefix+" <red>You can download it at: <white>https://modrinth.com/plugin/easy-command-blocker"));
+            }
+        }else{
+            getServer().getConsoleCommandSource().sendMessage(MiniMessage.miniMessage().deserialize(prefix+" <red>Error while checking update."));
+        }
     }
 }
