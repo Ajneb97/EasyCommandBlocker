@@ -11,6 +11,7 @@ import ecb.ajneb97.velocity.EasyCommandBlocker;
 import ecb.ajneb97.velocity.api.CommandBlockedEvent;
 import ecb.ajneb97.velocity.utils.ActionsUtils;
 import ecb.ajneb97.velocity.utils.OtherUtils;
+
 import java.util.Collection;
 import java.util.List;
 
@@ -25,9 +26,9 @@ public class PlayerListener {
     public void executeCommand(CommandExecuteEvent event) {
         if(event.getCommandSource() instanceof Player){
             Player player = (Player) event.getCommandSource();
-            String command = "/"+event.getCommand();
+            String command = "/"+event.getCommand().trim();
 
-            boolean isProxyCommand = plugin.getServer().getCommandManager().hasCommand(event.getCommand().split(" ")[0].toLowerCase());
+            boolean isProxyCommand = plugin.getServer().getCommandManager().hasCommand(event.getCommand().trim().split(" ")[0].toLowerCase());
             if(!isProxyCommand){
                 return;
             }

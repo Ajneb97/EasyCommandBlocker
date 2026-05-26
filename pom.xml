@@ -6,7 +6,7 @@
 
     <groupId>ecb.ajneb97</groupId>
     <artifactId>EasyCommandBlocker</artifactId>
-    <version>1.17.1</version>
+    <version>1.17.2</version>
     <packaging>jar</packaging>
 
     <properties>
